@@ -1,0 +1,35 @@
+
+global:
+  postgresql: {}
+
+cluster:
+  enabled: false
+
+networkPolicy:
+  enabled: false
+  
+enabled: true
+postgresqlUsername: alerta
+postgresqlDatabase: monitoring
+postgresqlPassword: "changeme" # provide a password here, otherwise it will be randomly generated inside postgresql helm chart and will not be available as a variable in the alerta helm chart
+persistence:
+    enabled: true
+    size: 10Gi
+    
+master:
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
+  nodeSelector:
+    type: apps
+
+  tolerations:
+     - key: "type"
+       operator: "Equal"
+       value: "apps"
+       effect: "NoSchedule"
+
+metrics:
+  enabled: true

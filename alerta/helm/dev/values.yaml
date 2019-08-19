@@ -1,0 +1,50 @@
+# Default values for alerta.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: alerta/alerta-web
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx-apps
+    kubernetes.io/tls-acme: "true"
+  paths:
+    - /
+  hosts:
+    - alerta-dev.dubber.net
+  tls:
+   - secretName: alerta-web-tls
+     hosts:
+       - alerta-dev.dubber.net
+
+nodeSelector:
+  type: apps
+
+tolerations:
+   - key: "type"
+     operator: "Equal"
+     value: "apps"
+     effect: "NoSchedule"
+
+affinity: {}
+
+
+alertaAdminPassword: "Changeme" # if not provided will be randomly generated
+alertaAdminUsers: # list of email addresses
+   - "dubber"
+
+alertaInstallPlugins:
+  - prometheus

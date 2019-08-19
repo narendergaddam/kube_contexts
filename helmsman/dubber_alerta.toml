@@ -1,0 +1,43 @@
+[metadata]
+  scope = "Dev"
+  maintainer = "devops@dubber.net"
+
+[settings]
+  kubeContext = "dev.k8s.dubber.net"
+[namespaces]
+
+  [namespaces.kube-system]
+    protected = true
+    useTiller = true
+
+  [namespaces.dubber-alerta]
+    # protected = true
+  [namespaces.dubber-alerta.labels]
+    type = "applications"
+
+[helmRepos]
+  stable = "https://kubernetes-charts.storage.googleapis.com"
+  incubator = "http://storage.googleapis.com/kubernetes-charts-incubator"
+  dubber = "https://${USER}:${PASSWORD}@chartmuseum.tools.littlekube.dubber.net"
+
+[apps]
+
+  [apps.dubber-alerta]
+    name = "dubber-alerta"
+    description = "Dubber Alerta application"
+    namespace = "dubber-alerta"
+    enabled = true
+    chart = "dubber/dubber-alerta"
+    version = "0.3.8"
+    valuesFile = "../../workloads/alerta/helm/dev/values.yaml"
+    purge = true
+
+  [apps.dubber-postgresql]
+    name = "dubber-postgresql"
+    description = "postgresql for dubber-alerts"
+    namespace = "dubber-alerta"
+    enabled = true
+    chart = "stable/postgresql"
+    version = "5.1.0"
+    valuesFile = "../../workloads/alerta/helm/dev/dubber-alerta/values.yaml"
+    purge = true
